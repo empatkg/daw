@@ -19,12 +19,12 @@ class AudioEngine(private val context: Context) {
     
     private var audioTrack: AudioTrack? = null
     private var isPlaying = false
-    private var isRecording = false
     private var playbackJob: Job? = null
     
     private val synth = Synthesizer()
+    private var stepJob: Job? = null
     
-    fun playPattern(pattern: Pattern) {
+    fun playPattern(patternManager: PatternManager) {
         if (isPlaying) return
         
         audioTrack = AudioTrack.Builder()
@@ -47,23 +47,20 @@ class AudioEngine(private val context: Context) {
         isPlaying = true
         audioTrack?.play()
         
+        val stepDurationMs = 150L
+        stepJob = CoroutineScope(Dispatchers.Default).launch {
+            var currentStep = 0
+            while (isPlaying) {
+                currentStep = (currentStep + 1) % 16
+                kotlinx.coroutines.delay(stepDurationMs)
+            }
+        }
+        
         playbackJob = CoroutineScope(Dispatchers.Default).launch {
             val buffer = ShortArray(bufferSize)
-            val stepDuration = sampleRate / 4 // 16th note at 60 BPM
-            var stepPosition = 0
-            var samplesInStep = 0
             
             while (isPlaying) {
-                val patternSteps = pattern.steps
-                val activeNotes = mutableListOf<Pair<Int, Float>>()
-                
-                for ((trackIndex, trackSteps) in patternSteps.withIndex()) {
-                    if (pattern.tracks[trackIndex].enabled && 
-                        stepPosition < trackSteps.size && trackSteps[stepPosition]) {
-                        val note = 60 + trackIndex // C4 base + track offset
-                        activeNotes.add(Pair(note, pattern.tracks[trackIndex].volume))
-                    }
-                }
+                val activeNotes = patternManager.getActiveNotes(patternManager.currentStep)
                 
                 for (i in buffer.indices) {
                     val sample = synth.generateSample(activeNotes, sampleRate)
@@ -71,18 +68,13 @@ class AudioEngine(private val context: Context) {
                 }
                 
                 audioTrack?.write(buffer, 0, buffer.size)
-                samplesInStep += buffer.size / 2
-                
-                if (samplesInStep >= stepDuration) {
-                    samplesInStep = 0
-                    stepPosition = (stepPosition + 1) % 16
-                }
             }
         }
     }
     
     fun stop() {
         isPlaying = false
+        stepJob?.cancel()
         playbackJob?.cancel()
         audioTrack?.stop()
         audioTrack?.release()
@@ -90,7 +82,6 @@ class AudioEngine(private val context: Context) {
     }
     
     fun startRecording() {
-        isRecording = true
     }
     
     fun release() {

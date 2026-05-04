@@ -3,6 +3,7 @@ package com.daw
 class PatternManager {
     private val patterns = mutableListOf<Pattern>()
     var currentPatternIndex = 0
+    var currentStep = 0
     
     init {
         patterns.add(Pattern())
@@ -20,6 +21,23 @@ class PatternManager {
         if (trackIndex < currentPattern.steps.size && stepIndex < 16) {
             currentPattern.steps[trackIndex][stepIndex] = active
         }
+    }
+    
+    fun nextStep(): Int {
+        currentStep = (currentStep + 1) % 16
+        return currentStep
+    }
+    
+    fun getActiveNotes(currentStep: Int): List<Pair<Int, Float>> {
+        val result = mutableListOf<Pair<Int, Float>>()
+        val pattern = currentPattern
+        for (i in pattern.tracks.indices) {
+            if (pattern.tracks[i].enabled && currentStep < pattern.steps[i].size && pattern.steps[i][currentStep]) {
+                val note = 60 + i
+                result.add(Pair(note, pattern.tracks[i].volume))
+            }
+        }
+        return result
     }
     
     private fun getRandomColor(): Int {
