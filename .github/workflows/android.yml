@@ -20,6 +20,12 @@ jobs:
         distribution: 'temurin'
         cache: 'gradle'
     
+    - name: Install Gradle
+      run: |
+        curl -sL https://services.gradle.org/distributions/gradle-8.7-bin.zip -o /tmp/gradle.zip
+        sudo unzip -d /opt /tmp/gradle.zip
+        sudo ln -sf /opt/gradle-8.7/bin/gradle /usr/local/bin/gradle
+    
     - name: Setup Android SDK
       uses: android-actions/setup-android@v3
       with:
@@ -27,7 +33,8 @@ jobs:
         ndk: false
       
     - name: Build Debug APK
-      run: ./gradlew assembleDebug
+      run: gradle assembleDebug
+      working-directory: .
       
     - name: Publish APK
       uses: actions/upload-artifact@v4
