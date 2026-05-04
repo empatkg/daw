@@ -42,7 +42,7 @@ class TransportView @JvmOverloads constructor(
         super.onDraw(canvas)
         
         val centerY = height / 2f
-        val buttonRadius = (height * 0.35).coerceAtMost(width * 0.1f)
+        val buttonRadius = (height * 0.35f).coerceAtMost(width * 0.1f)
         
         val spacing = width / 4f
         
@@ -56,9 +56,9 @@ class TransportView @JvmOverloads constructor(
         paint.color = Color.WHITE
         paint.style = Paint.Style.FILL
         path.reset()
-        path.moveTo(spacing - buttonRadius / 2, centerY - buttonRadius / 2)
-        path.lineTo(spacing - buttonRadius / 2, centerY + buttonRadius / 2)
-        path.lineTo(spacing + buttonRadius / 2, centerY)
+        path.moveTo(spacing - buttonRadius, centerY - buttonRadius)
+        path.lineTo(spacing - buttonRadius, centerY + buttonRadius)
+        path.lineTo(spacing + buttonRadius, centerY)
         path.close()
         canvas.drawPath(path, paint)
         
@@ -71,8 +71,8 @@ class TransportView @JvmOverloads constructor(
         
         paint.color = Color.WHITE
         canvas.drawRect(
-            stopX - buttonRadius * 0.5f, centerY - buttonRadius * 0.5f,
-            stopX + buttonRadius * 0.5f, centerY + buttonRadius * 0.5f,
+            stopX - buttonRadius, centerY - buttonRadius,
+            stopX + buttonRadius, centerY + buttonRadius,
             paint
         )
         

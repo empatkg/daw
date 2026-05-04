@@ -6,7 +6,7 @@ import android.graphics.Color
 import android.graphics.Paint
 import android.util.AttributeSet
 import android.view.View
-import kotlin.math.minOf
+import kotlin.math.min
 
 class SequencerView @JvmOverloads constructor(
     context: Context,
@@ -57,7 +57,7 @@ class SequencerView @JvmOverloads constructor(
         val height = height
         val rows = pattern.tracks.size
         
-        cellSize = minOf(50, width / 18, height / (rows + 1))
+        cellSize = min(50, min(width / 18, height / (rows + 1)))
         
         for (step in 0 until 16) {
             textPaint.color = if (step == currentStep) Color.YELLOW else Color.GRAY
