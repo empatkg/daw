@@ -13,7 +13,7 @@ class AudioEngine(private val context: Context) {
     private val sampleRate = 44100
     private val bufferSize = AudioTrack.getMinBufferSize(
         sampleRate,
-        AudioFormat.CHANNEL_OUT_STEREO,
+        AudioFormat.CHANNEL_OUT_MONO,
         AudioFormat.ENCODING_PCM_16BIT
     )
     
@@ -38,7 +38,7 @@ class AudioEngine(private val context: Context) {
                 AudioFormat.Builder()
                     .setSampleRate(sampleRate)
                     .setEncoding(AudioFormat.ENCODING_PCM_16BIT)
-                    .setChannelMask(AudioFormat.CHANNEL_OUT_STEREO)
+                    .setChannelMask(AudioFormat.CHANNEL_OUT_MONO)
                     .build()
             )
             .setBufferSizeInBytes(bufferSize)
@@ -48,7 +48,7 @@ class AudioEngine(private val context: Context) {
         audioTrack?.play()
         
         playbackJob = CoroutineScope(Dispatchers.Default).launch {
-            val buffer = ShortArray(bufferSize / 2)
+            val buffer = ShortArray(bufferSize)
             val stepDuration = sampleRate / 4 // 16th note at 60 BPM
             var stepPosition = 0
             var samplesInStep = 0
@@ -65,10 +65,9 @@ class AudioEngine(private val context: Context) {
                     }
                 }
                 
-                for (i in buffer.indices step 2) {
+                for (i in buffer.indices) {
                     val sample = synth.generateSample(activeNotes, sampleRate)
                     buffer[i] = (sample * Short.MAX_VALUE).toInt().toShort()
-                    buffer[i + 1] = buffer[i]
                 }
                 
                 audioTrack?.write(buffer, 0, buffer.size)
