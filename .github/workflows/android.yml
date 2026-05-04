@@ -27,7 +27,9 @@ jobs:
         ndk: false
       
     - name: Build Debug APK
-      run: gradle assembleDebug
+      run: |
+        export ANDROID_SDK_ROOT=${ANDROID_SDK_ROOT}
+        gradle assembleDebug
       
     - name: Publish APK
       uses: actions/upload-artifact@v4
