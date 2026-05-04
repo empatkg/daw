@@ -14,6 +14,4 @@ data class Pattern(
         BooleanArray(16),
         BooleanArray(16)
     )
-) {
-    fun getSteps(): List<BooleanArray> = steps
-}
+)
