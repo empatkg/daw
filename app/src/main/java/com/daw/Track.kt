@@ -7,5 +7,6 @@ data class Track(
     var volume: Float = 1.0f,
     var muted: Boolean = false,
     var solo: Boolean = false,
-    var waveType: Int = 0
+    var waveType: Int = 0,
+    var pan: Float = 0.5f
 )
