@@ -21,12 +21,13 @@ class EffectsRackView @JvmOverloads constructor(
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
         
-        val width = width
-        val height = height
-        val itemHeight = height / (effects.size + 1)
+        val width = width.toFloat()
+        val height = height.toFloat()
+        val nEffects = effects.size + 1
+        val itemHeight = height / nEffects
         
         paint.color = Color.rgb(40, 40, 40)
-        canvas.drawRect(0f, 0f, width.toFloat(), height.toFloat(), paint)
+        canvas.drawRect(0f, 0f, width, height, paint)
         
         textPaint.color = Color.WHITE
         textPaint.textSize = 32f

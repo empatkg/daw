@@ -42,7 +42,7 @@ class MainActivity : AppCompatActivity() {
         transportView = binding.transportView
         transportView.setOnTransportListener(object : TransportView.TransportListener {
             override fun onPlay() {
-                audioEngine.playPattern(patternManager.currentPattern)
+                audioEngine.playPattern(patternManager)
             }
             
             override fun onStop() {

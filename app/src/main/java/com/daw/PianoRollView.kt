@@ -25,8 +25,8 @@ class PianoRollView @JvmOverloads constructor(
     private var cellWidth = 40
     private var cellHeight = 30
     
-    private var scrollX = 0
-    private var scrollY = 0
+    private var scrollX = 0f
+    private var scrollY = 0f
     
     fun setPatternManager(manager: PatternManager) {
         this.patternManager = manager
@@ -42,31 +42,27 @@ class PianoRollView @JvmOverloads constructor(
         super.onDraw(canvas)
         
         val pattern = patternManager?.currentPattern ?: return
-        val width = width
-        val height = height
-        val notes = 128
+        val width = width.toFloat()
+        val height = height.toFloat()
         
-        cellWidth = max(30, width / 16)
-        cellHeight = max(20, height / (notes / 12))
+        cellWidth = max(30, (width / 16).toInt())
+        cellHeight = max(20, ((height) / 12).toInt())
         
-        // Draw grid background
         paint.color = Color.rgb(30, 30, 30)
-        canvas.drawRect(0f, 0f, width.toFloat(), height.toFloat(), paint)
+        canvas.drawRect(0f, 0f, width, height, paint)
         
-        // Draw notes (piano roll style)
         for (note in 0 until 16) {
             val y = height - (note + 1) * cellHeight + scrollY
             if (y < 0 || y > height) continue
             
             paint.color = if (note % 12 == 0) Color.DKGRAY else Color.rgb(50, 50, 50)
-            canvas.drawRect(0f, y - cellHeight, width.toFloat(), y.toFloat(), paint)
+            canvas.drawRect(0f, y - cellHeight, width, y, paint)
             
             textPaint.color = Color.LTGRAY
             textPaint.textSize = 24f
             canvas.drawText("C${note / 12}", 5f, y - 5f, textPaint)
         }
         
-        // Draw notes
         for (step in 0 until 16) {
             for (note in 0 until 16) {
                 val y = height - (note + 1) * cellHeight + scrollY
@@ -80,11 +76,10 @@ class PianoRollView @JvmOverloads constructor(
             }
         }
         
-        // Draw current step indicator
         val currentStepX = (patternManager?.currentStep ?: 0) * cellWidth - scrollX
         paint.color = Color.YELLOW
         paint.style = Paint.Style.STROKE
-        canvas.drawLine(currentStepX.toFloat(), 0f, currentStepX.toFloat(), height.toFloat(), paint)
+        canvas.drawLine(currentStepX.toFloat(), 0f, currentStepX.toFloat(), height, paint)
     }
     
     override fun onTouchEvent(event: MotionEvent): Boolean {
