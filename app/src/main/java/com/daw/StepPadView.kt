@@ -4,7 +4,6 @@ import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
-import android.graphics.Rect
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
@@ -53,26 +52,24 @@ class StepPadView @JvmOverloads constructor(
             val track = pattern.tracks[row]
             val rowY = row * cellSize
             
-            // Track label background
             paint.color = track.color
-            canvas.drawRect(0f, rowY, cellSize + 40, rowY + cellSize, paint)
+            canvas.drawRect(0f, rowY.toFloat(), cellSize + 40f, rowY + cellSize, paint)
             
             paint.textSize = 24f
             paint.textAlign = Paint.Align.LEFT
             paint.color = Color.WHITE
             canvas.drawText(track.name, 8f, rowY + cellSize / 2f + 8, paint)
             
-            // Steps
             for (col in 0 until numCols) {
                 val isActive = pattern.steps[row][col]
                 val x = (col + 1) * cellSize
-                
+              
                 if (isActive) {
                     paint.color = track.color
                     paint.style = Paint.Style.FILL
                     canvas.drawRect(
-                        x + 4, rowY + 4,
-                        x + cellSize - 4, rowY + cellSize - 4,
+                        x + 4f, rowY + 4f,
+                        x + cellSize - 4f, rowY + cellSize - 4f,
                         paint
                     )
                 } else {
