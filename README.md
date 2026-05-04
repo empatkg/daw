@@ -4,12 +4,15 @@ A digital audio workstation for Android, inspired by FL Studio Mobile. Built wit
 
 ## Features
 
-- **Step Sequencer**: 16-step grid for creating patterns
-- **Step Pad**: Visual grid for toggling steps on/off
-- **Transport Controls**: Play, stop, and record
-- **Mixer**: Volume controls per track with mute/solo
-- **Synthesizer**: Built-in synth with multiple wave shapes
-- **Pattern Management**: Multiple tracks with editable patterns
+- **Step Sequencer**: 16-step grid for creating patterns with visual feedback
+- **Step Pad**: Interactive grid for toggling beats on/off per track
+- **Piano Roll**: Note editor for detailed pattern editing
+- **Transport Controls**: Play, stop, and record buttons
+- **Mixer**: Volume sliders per track with mute/solo controls
+- **Effects Rack**: Visual effects chain (Delay, Reverb, Filter, Distortion, Compressor)
+- **Synthesizer**: Built-in synth with multiple wave shapes (sine, square, sawtooth, triangle)
+- **Drum Sounds**: Kicks, snares, hi-hats, and claps for beat making
+- **Pattern Management**: Multiple tracks with editable patterns and step sequencing
 
 ## Project Structure
 
@@ -19,19 +22,19 @@ daw/
 │   ├── src/main/
 │   │   ├── java/com/daw/
 │   │   │   ├── MainActivity.kt       # Main entry point
-│   │   │   ├── AudioEngine.kt        # Audio playback engine
-│   │   │   ├── Synthesizer.kt        # Wave generation
-│   │   │   ├── PatternManager.kt     # Pattern data management
+│   │   │   ├── AudioEngine.kt        # Real-time audio engine
+│   │   │   ├── Synthesizer.kt        # Wave generation & drum sounds
+│   │   │   ├── PatternManager.kt     # Pattern data and step tracking
 │   │   │   ├── Pattern.kt            # Pattern model
-│   │   │   ├── Track.kt              # Track model
-│   │   │   ├── StepPadView.kt        # Step grid UI
-│   │   │   ├── SequencerView.kt      # Sequencer display
+│   │   │   ├── Track.kt              # Track model with wave type
+│   │   │   ├── StepPadView.kt        # Interactive step grid
+│   │   │   ├── SequencerView.kt      # Step display
+│   │   │   ├── PianoRollView.kt      # Note editor
 │   │   │   ├── MixerView.kt          # Volume sliders
-│   │   │   ├── TransportView.kt      # Play/stop/record buttons
-│   │   │   └── Extensions.kt         # Utility extensions
+│   │   │   ├── TransportView.kt      # Play/stop/record
+│   │   │   └── EffectsRackView.kt    # Effects chain
 │   │   └── res/                      # Layouts and resources
 │   └── build.gradle                  # App dependencies
-├── build.gradle                      # Project build config
 ├── settings.gradle                   # Module configuration
 └── .github/workflows/android.yml     # CI build pipeline
 ```
@@ -52,6 +55,12 @@ Requires Android SDK and JDK 17:
 - Square wave  
 - Sawtooth wave
 - Triangle wave
+
+## Drum Sounds
+- Kick drum (deep bass with pitch envelope)
+- Snare drum (noise with decay)
+- Hi-hat (high-passed noise)
+- Clap (short noise burst)
 
 ## License
 MIT
