@@ -1,7 +1,6 @@
 package com.daw
 
 class Synthesizer {
-    private var phase = 0.0
     private val sampleAccumulator = mutableMapOf<Int, Double>()
     
     fun generateSample(activeNotes: List<Pair<Int, Float>>, sampleRate: Int): Float {
@@ -25,7 +24,7 @@ class Synthesizer {
             sampleAccumulator[note] = notePhase % (2.0 * Math.PI)
         }
         
-        return output.coerceIn(-1.0f, 1.0f)
+        return output.coerceIn(-1.0, 1.0).toFloat()
     }
     
     private fun squareWave(phase: Double): Double {

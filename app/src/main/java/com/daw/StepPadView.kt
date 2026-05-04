@@ -14,27 +14,16 @@ class StepPadView @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0
-) : View {
+) : View(context, attrs, defStyleAttr) {
     
     private var patternManager: PatternManager? = null
     private var onPadClickListener: ((Int, Int, Boolean) -> Unit)? = null
     
     private val paint = Paint(Paint.ANTI_ALIAS_FLAG)
-    private val activePaint = Paint(Paint.ANTI_ALIAS_FLAG)
-    private val textPaint = Paint(Paint.ANTI_ALIAS_FLAG)
     
     private var cellSize = 0
     private var numRows = 4
     private var numCols = 16
-    
-    init {
-        activePaint.color = Color.WHITE
-        activePaint.style = Paint.Style.FILL
-        
-        textPaint.color = Color.WHITE
-        textPaint.textSize = 32f
-        textPaint.textAlign = Paint.Align.CENTER
-    }
     
     fun setPatternManager(manager: PatternManager) {
         this.patternManager = manager
@@ -71,12 +60,14 @@ class StepPadView @JvmOverloads constructor(
                 paint
             )
             
-            textPaint.color = track.color
+            paint.textSize = 32f
+            paint.textAlign = Paint.Align.CENTER
+            paint.color = Color.WHITE
             canvas.drawText(
                 track.name.take(3),
                 cellSize / 2f,
                 row * cellSize + cellSize / 2f + 8,
-                textPaint
+                paint
             )
             
             for (col in 0 until numCols) {
@@ -95,7 +86,6 @@ class StepPadView @JvmOverloads constructor(
             }
         }
         
-        // Draw grid lines
         paint.color = Color.GRAY
         paint.style = Paint.Style.STROKE
         paint.strokeWidth = 0.5f

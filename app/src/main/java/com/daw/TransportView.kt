@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
+import android.graphics.Path
 import android.graphics.RectF
 import android.util.AttributeSet
 import android.view.MotionEvent
@@ -13,7 +14,7 @@ class TransportView @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0
-) : View {
+) : View(context, attrs, defStyleAttr) {
     
     interface TransportListener {
         fun onPlay()
@@ -25,6 +26,7 @@ class TransportView @JvmOverloads constructor(
     
     private val paint = Paint(Paint.ANTI_ALIAS_FLAG)
     private val buttonPaint = Paint(Paint.ANTI_ALIAS_FLAG)
+    private val path = Path()
     
     private var playButtonRect = RectF()
     private var stopButtonRect = RectF()
@@ -44,7 +46,6 @@ class TransportView @JvmOverloads constructor(
         
         val spacing = width / 4f
         
-        // Play button (triangle)
         playButtonRect.set(spacing - buttonRadius, centerY - buttonRadius, 
                           spacing + buttonRadius, centerY + buttonRadius)
         
@@ -54,14 +55,13 @@ class TransportView @JvmOverloads constructor(
         
         paint.color = Color.WHITE
         paint.style = Paint.Style.FILL
-        val path = android.graphics.Path()
+        path.reset()
         path.moveTo(spacing - buttonRadius / 2, centerY - buttonRadius / 2)
         path.lineTo(spacing - buttonRadius / 2, centerY + buttonRadius / 2)
         path.lineTo(spacing + buttonRadius / 2, centerY)
         path.close()
         canvas.drawPath(path, paint)
         
-        // Stop button (square)
         val stopX = spacing * 2
         stopButtonRect.set(stopX - buttonRadius, centerY - buttonRadius,
                           stopX + buttonRadius, centerY + buttonRadius)
@@ -76,7 +76,6 @@ class TransportView @JvmOverloads constructor(
             paint
         )
         
-        // Record button (circle)
         val recordX = spacing * 3
         recordButtonRect.set(recordX - buttonRadius, centerY - buttonRadius,
                              recordX + buttonRadius, centerY + buttonRadius)

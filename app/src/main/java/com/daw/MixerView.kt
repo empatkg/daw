@@ -13,7 +13,7 @@ class MixerView @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0
-) : View {
+) : View(context, attrs, defStyleAttr) {
     
     private var patternManager: PatternManager? = null
     
@@ -52,19 +52,17 @@ class MixerView @JvmOverloads constructor(
         sliderWidth = (width - 120).coerceAtMost(200)
         sliderX = width - sliderWidth - 20
         
-        for ((index, track) in pattern.tracks.withIndices()) {
+        for (index in pattern.tracks.indices) {
+            val track = pattern.tracks[index]
             val y = index * trackHeight
             
-            // Track color indicator
             paint.color = track.color
             paint.style = Paint.Style.FILL
             canvas.drawRect(10f, y.toFloat() + 10, 40f, (y + trackHeight - 10).toFloat(), paint)
             
-            // Track name
             textPaint.color = Color.WHITE
             canvas.drawText(track.name, 50f, y + trackHeight / 2f + 8, textPaint)
             
-            // Volume slider background
             paint.color = Color.DKGRAY
             canvas.drawRect(
                 sliderX.toFloat(),
@@ -74,7 +72,6 @@ class MixerView @JvmOverloads constructor(
                 paint
             )
             
-            // Volume slider handle
             val thumbX = sliderX + (track.volume * sliderWidth).toInt()
             paint.color = track.color
             canvas.drawCircle(
@@ -84,7 +81,6 @@ class MixerView @JvmOverloads constructor(
                 paint
             )
             
-            // Mute/Solo indicators
             textPaint.textSize = 20f
             textPaint.color = if (track.muted) Color.RED else Color.GRAY
             canvas.drawText("M", sliderX + sliderWidth + 30f, y + trackHeight / 2f + 6, textPaint)
