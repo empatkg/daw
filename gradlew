@@ -1,26 +1,10 @@
-#!/bin/bash
+#!/usr/bin/env sh
 
-# Gradle wrapper script
-cd "$(dirname "$0")"
+# Gradle start up script for UN*X
 
-# Extract gradle version from properties
-GRADLE_VERSION=$(grep 'distributionUrl' gradle/wrapper/gradle-wrapper.properties | sed 's/.*gradle-\(.*\)-bin.zip.*/gradle-\1/')
+# Add default JVM options
+DEFAULT_JVM_OPTS="-Xmx64m -Xms64m"
+JAVA_OPTS="$JAVA_OPTS -Dfile.encoding=UTF-8"
 
-# Set up environment
-GRADLE_USER_HOME="${GRADLE_USER_HOME:-$HOME/.gradle}"
-WRAPPER_DIR="$GRADLE_USER_HOME/wrapper/dists"
-
-# Find or download gradle
-DISTS=$(find "$WRAPPER_DIR" -maxdepth 1 -name "${GRADLE_VERSION#gradle}-*" -type d 2>/dev/null | head -1)
-if [ -z "$DISTS" ] || [ ! -f "$DISTS/bin/gradle" ]; then
-    mkdir -p "$WRAPPER_DIR"
-    cd "$WRAPPER_DIR"
-    URL="https://services.gradle.org/distributions/${GRADLE_VERSION}.zip"
-    curl -sL "$URL" -o gradle.zip
-    unzip -q gradle.zip
-    rm gradle.zip
-    cd - > /dev/null
-    DISTS=$(find "$WRAPPER_DIR" -maxdepth 1 -name "${GRADLE_VERSION#gradle}-*" -type d | head -1)
-fi
-
-exec "$DISTS/bin/gradle" "$@"
+# Use the gradle wrapper jar
+exec java $DEFAULT_JVM_OPTS $JAVA_OPTS -jar "$(dirname "$0")/gradle/wrapper/gradle-wrapper.jar" "$@"

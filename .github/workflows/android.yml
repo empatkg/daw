@@ -26,13 +26,8 @@ jobs:
         api-level: 34
         ndk: false
       
-    - name: Grant execute permission for gradlew
-      run: chmod +x gradlew
-      
     - name: Build Debug APK
-      run: ./gradlew assembleDebug --no-daemon
-      env:
-        ANDROID_SDK_ROOT: ${{ env.ANDROID_SDK_ROOT }}
+      run: ./gradlew assembleDebug
       
     - name: Publish APK
       uses: actions/upload-artifact@v4
