@@ -44,56 +44,48 @@ class StepPadView @JvmOverloads constructor(
         super.onDraw(canvas)
         
         val pattern = patternManager?.currentPattern ?: return
-        val width = width
-        val height = height
+        val width = width.toFloat()
+        val height = height.toFloat()
         
-        cellSize = min(width / numCols, height / numRows)
+        cellSize = min(width / numCols, height / numRows).toInt()
         
         for (row in 0 until numRows) {
             val track = pattern.tracks[row]
+            val rowY = row * cellSize
+            
+            // Track label background
             paint.color = track.color
-            paint.style = Paint.Style.STROKE
-            paint.strokeWidth = 2f
+            canvas.drawRect(0f, rowY, cellSize + 40, rowY + cellSize, paint)
             
-            canvas.drawRect(
-                Rect(0, row * cellSize, width, (row + 1) * cellSize),
-                paint
-            )
-            
-            paint.textSize = 32f
-            paint.textAlign = Paint.Align.CENTER
+            paint.textSize = 24f
+            paint.textAlign = Paint.Align.LEFT
             paint.color = Color.WHITE
-            canvas.drawText(
-                track.name.take(3),
-                cellSize / 2f,
-                row * cellSize + cellSize / 2f + 8,
-                paint
-            )
+            canvas.drawText(track.name, 8f, rowY + cellSize / 2f + 8, paint)
             
+            // Steps
             for (col in 0 until numCols) {
                 val isActive = pattern.steps[row][col]
+                val x = (col + 1) * cellSize
+                
                 if (isActive) {
                     paint.color = track.color
                     paint.style = Paint.Style.FILL
                     canvas.drawRect(
-                        col * cellSize + 4f,
-                        row * cellSize + 4f,
-                        (col + 1) * cellSize - 4f,
-                        (row + 1) * cellSize - 4f,
+                        x + 4, rowY + 4,
+                        x + cellSize - 4, rowY + cellSize - 4,
+                        paint
+                    )
+                } else {
+                    paint.color = Color.DKGRAY
+                    paint.style = Paint.Style.STROKE
+                    paint.strokeWidth = 1f
+                    canvas.drawRect(
+                        x.toFloat(), rowY.toFloat(),
+                        x + cellSize, rowY + cellSize,
                         paint
                     )
                 }
             }
-        }
-        
-        paint.color = Color.GRAY
-        paint.style = Paint.Style.STROKE
-        paint.strokeWidth = 0.5f
-        for (i in 0..numCols) {
-            canvas.drawLine(i * cellSize.toFloat(), 0f, i * cellSize.toFloat(), height.toFloat(), paint)
-        }
-        for (i in 0..numRows) {
-            canvas.drawLine(0f, i * cellSize.toFloat(), width.toFloat(), i * cellSize.toFloat(), paint)
         }
     }
     
@@ -113,7 +105,7 @@ class StepPadView @JvmOverloads constructor(
     
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         val desiredWidth = numCols * 60
-        val desiredHeight = numRows * 60
+        val desiredHeight = numRows * 80
         
         val width = resolveSize(desiredWidth, widthMeasureSpec)
         val height = resolveSize(desiredHeight, heightMeasureSpec)

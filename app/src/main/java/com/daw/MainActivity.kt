@@ -10,6 +10,8 @@ class MainActivity : AppCompatActivity() {
     private lateinit var stepPadView: StepPadView
     private lateinit var mixerView: MixerView
     private lateinit var transportView: TransportView
+    private lateinit var pianoRollView: PianoRollView
+    private lateinit var effectsRackView: EffectsRackView
     
     private lateinit var audioEngine: AudioEngine
     private lateinit var patternManager: PatternManager
@@ -23,7 +25,7 @@ class MainActivity : AppCompatActivity() {
         patternManager = PatternManager()
         
         setupViews()
-        setupTransport()
+        setupButtons()
     }
     
     private fun setupViews() {
@@ -53,14 +55,37 @@ class MainActivity : AppCompatActivity() {
                 audioEngine.startRecording()
             }
         })
+        
+        pianoRollView = binding.pianoRollView
+        pianoRollView.setPatternManager(patternManager)
+        
+        effectsRackView = binding.effectsRackView
     }
     
-    private fun setupTransport() {
+    private fun setupButtons() {
+        binding.btnPlay.setOnClickListener {
+            audioEngine.playPattern(patternManager)
+        }
+        
+        binding.btnStop.setOnClickListener {
+            audioEngine.stop()
+        }
+        
         binding.btnAddTrack.setOnClickListener {
             patternManager.addTrack()
             sequencerView.invalidate()
             stepPadView.invalidate()
             mixerView.invalidate()
+        }
+        
+        binding.btnClear.setOnClickListener {
+            for (trackIdx in 0 until 4) {
+                for (stepIdx in 0 until 16) {
+                    patternManager.setStep(trackIdx, stepIdx, false)
+                }
+            }
+            sequencerView.invalidate()
+            stepPadView.invalidate()
         }
     }
     

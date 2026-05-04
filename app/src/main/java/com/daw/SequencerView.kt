@@ -6,7 +6,7 @@ import android.graphics.Color
 import android.graphics.Paint
 import android.util.AttributeSet
 import android.view.View
-import kotlin.math.min
+import kotlin.math.minOf
 
 class SequencerView @JvmOverloads constructor(
     context: Context,
@@ -47,30 +47,46 @@ class SequencerView @JvmOverloads constructor(
     
     fun setPatternManager(manager: PatternManager) {
         this.patternManager = manager
+        invalidate()
     }
     
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
         
         val pattern = patternManager?.currentPattern ?: return
-        val width = width
-        val height = height
+        val width = width.toFloat()
+        val height = height.toFloat()
         val rows = pattern.tracks.size
         
-        cellSize = min(50, min(width / 18, height / (rows + 1)))
+        cellSize = minOf(50, min((width / 18).toInt(), (height / (rows + 1)).toInt()))
         
+        // Header background
+        paint.color = Color.rgb(40, 40, 40)
+        canvas.drawRect(0f, 0f, width, cellSize * 1.5f, paint)
+        
+        // Step numbers
         for (step in 0 until 16) {
-            textPaint.color = if (step == currentStep) Color.YELLOW else Color.GRAY
-            canvas.drawText(step.toString(), (step + 1) * cellSize + cellSize / 2f, 30f, textPaint)
+            textPaint.color = if (step == currentStep) Color.YELLOW else Color.LTGRAY
+            val x = (step + 1) * cellSize + cellSize / 2f
+            canvas.drawText(step.toString(), x, cellSize / 2f + 8, textPaint)
         }
         
+        // Grid
+        val startY = cellSize * 1.5f
         for (rowIndex in pattern.tracks.indices) {
             val track = pattern.tracks[rowIndex]
-            val y = (rowIndex + 1) * cellSize + 30
+            val y = startY + rowIndex * cellSize + cellSize / 2
             
+            // Track color bar
+            paint.color = track.color
+            canvas.drawRect(0f, y - cellSize / 2 + 4, 8f, y + cellSize / 2 - 4, paint)
+            
+            // Track name
             textPaint.color = Color.WHITE
-            canvas.drawText(track.name.take(4), cellSize / 2f, y + cellSize / 2f + 8, textPaint)
+            textPaint.textSize = 20f
+            canvas.drawText(track.name.take(6), cellSize / 2f, y + 6, textPaint)
             
+            // Steps
             for (step in 0 until 16) {
                 val x = (step + 1) * cellSize + cellSize / 2
                 
@@ -89,6 +105,12 @@ class SequencerView @JvmOverloads constructor(
                 )
             }
         }
+        
+        // Current step vertical line
+        val stepX = (currentStep + 1) * cellSize + cellSize / 2
+        paint.color = Color.YELLOW
+        paint.strokeWidth = 2f
+        canvas.drawLine(stepX, startY, stepX, height, paint)
     }
     
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
